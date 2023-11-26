@@ -7,13 +7,14 @@ using UnityEngine.SceneManagement;
 
 public class MyGameManager : MonoBehaviour
 {
+
     public GameObject TheVirus;
     public GameObject TheInjector;
     public GameObject TheLeftController;
-    private GameObject CurrentLeftInjector;
+    private GameObject CurrentLeftInjector;//in hand not fired yet
 
     public GameObject TheRightController;
-    private GameObject CurrentRightInjector;
+    private GameObject CurrentRightInjector;//in hand not fired yet
 
     private float initialX;
     private float initialY;
@@ -21,84 +22,110 @@ public class MyGameManager : MonoBehaviour
 
     public Text VirusesNumberDisplay;
 
-    //Start is called before the first frame update
+    // Start is called before the first frame update
     void Start()
     {
-        //Start by generating VIRUSES!!!
-        for (int i=0; i<ApplicationData.HowManyViruses; i++)//Loop to instatiate viruses
+        ApplicationData.HowManyViruses = 10;///here is where we decide how many viruses to 
+        //start by GENERATIing VIRUSES//
+        for (int i = 0; i < ApplicationData.HowManyViruses; i++)//loop to instanciate viruses
         {
             initialX = Random.Range(-5f, 5f);
             initialY = Random.Range(-5f, 5f);
-            initialZ = Random.Range(-5f, 5f);//give random XYZ for this instance
-            Instantiate(TheVirus, new Vector3(initialX, initialY, initialZ), Quaternion.identity);
-            //Make new virus
+            initialZ = Random.Range(-5f, 5f);//give random xyz for this instance
+            Instantiate(TheVirus, new Vector3(initialX, initialY, initialZ), Quaternion.identity);//make a new virus
 
-        }//End for END GENERATE VIRUSES//
+        }//end for
+        //END GENERATE VIRUSES//
 
-        //Instantiate first injectors//
-        
-        MakeNewInjectorL();//Call the function to mke first new injeftor on left hand
-        MakeNewInjectorR();//Call the function to mke first new injeftor on right hand
-        //Definitions for these functions are right after "update"
-    }
+        //instaciate first injectors//
 
-    //Update is called once per frame
+        MakeNewInjectorL();///call function to make first new injector on left hand
+        MakeNewInjectorR();///call function to make first new injector on right hand
+        //definitions for these functions are right after "update"
+    }//end of start
+
+    // Update is called once per frame
     void Update()
     {
-        //Display the number of viruses left
+        ///display the number of viruses left
+
         VirusesNumberDisplay.text = "VIRUSES REMAINING: " + ApplicationData.HowManyViruses.ToString();
 
-        // code for left hand//
+
+        ///code for left hand/////
         if (ApplicationData.LInjectorLoaded && !ApplicationData.LInjectorFired)
-        {
+        {//if injector loaded but not fired
             CurrentLeftInjector.transform.position = TheLeftController.transform.position;
             CurrentLeftInjector.transform.rotation = TheLeftController.transform.rotation;
+        }//attach it to the hand
+
+        if (OVRInput.Get(OVRInput.RawButton.LIndexTrigger) && ApplicationData.LInjectorLoaded ||
+            Input.GetKeyDown(KeyCode.L))//trigger pressed, injector loaded but not fired yet...
+        {
+            ApplicationData.LInjectorLoaded = false;//not loaded anymore
+            ApplicationData.LInjectorFired = true;//mark as fired
+            CurrentLeftInjector.GetComponent<ConstantForce>().enabled = true;//enable forward force, FIRE!
+            CurrentLeftInjector.GetComponent<AudioSource>().pitch = Random.Range(0.1f, 2f);
+            CurrentLeftInjector.GetComponent<AudioSource>().Play();
+            //  
+
         }
 
-        if (OVRInput.Get(OVRInput.RawButton.LIndexTrigger) && ApplicationData.LInjectorLoaded)//Trigger released
+        if (!OVRInput.Get(OVRInput.RawButton.LIndexTrigger) && !ApplicationData.LInjectorLoaded)//trigger released
         {
-            ApplicationData.LInjectorLoaded = true;//New loaded
-            Invoke("MakeNewInjectorL", 0.3f);//Call MakeNewInjector in a little delay, give time to current injector to leave
+            ApplicationData.LInjectorLoaded = true;//new loaded 
+            Invoke("MakeNewInjectorL", 0.3f);//call MakeNewInjector in a little delay, give time to current injector to leave
         }
 
-        //Code for right hand
-        if(OVRInput.Get(OVRInput.RawButton.RIndexTrigger) && ApplicationData.RInjectorLoaded)//Trigger released
+        ///code for right hand/////
+        if (ApplicationData.RInjectorLoaded && !ApplicationData.RInjectorFired)
         {
-            ApplicationData.RInjectorLoaded = false;//Not loaded anymore
-            ApplicationData.RInjectorFired = true;//Mark as fired
-            CurrentRightInjector.GetComponent<ConstantForce>().enabled = true;//Enable forward force
+            CurrentRightInjector.transform.position = TheRightController.transform.position;
+            CurrentRightInjector.transform.rotation = TheRightController.transform.rotation;
+        }
+
+        if (OVRInput.Get(OVRInput.RawButton.RIndexTrigger) && ApplicationData.RInjectorLoaded ||
+            Input.GetKeyDown(KeyCode.R))//trigger pressed, injector loaded but not fired yet...
+        {
+            ApplicationData.RInjectorLoaded = false;//not loaded anymore
+            ApplicationData.RInjectorFired = true;//mark as fired
+            CurrentRightInjector.GetComponent<ConstantForce>().enabled = true;//enable forward force
             CurrentRightInjector.GetComponent<AudioSource>().pitch = Random.Range(0.1f, 2f);
             CurrentRightInjector.GetComponent<AudioSource>().Play();
+
         }
 
-        if (!OVRInput.Get(OVRInput.RawButton.RIndexTrigger) && !ApplicationData.RInjectorLoaded)//Trigger released
+        if (!OVRInput.Get(OVRInput.RawButton.RIndexTrigger) && !ApplicationData.RInjectorLoaded)//trigger released
         {
-            ApplicationData.RInjectorLoaded = true;//New loaded
-            Invoke("<akeNewInjectorR", 0.3f);//Call MakeNewInjector in a little delay, give time to current injector to leave
+            ApplicationData.RInjectorLoaded = true;//new loaded
+            Invoke("MakeNewInjectorR", 0.3f);//call MakeNewInjector in a little delay, give time to current injector to leave
         }
 
-        ///Check if all viruses were killed, if yes - take to "WIN" scene///
+        /////check if all viruses were killed, if yes- take to "win" scene//////
 
-        if (ApplicationData.HowManyViruses == 0)//No viruses left
+        if (ApplicationData.HowManyViruses == 0)//no viruses left
         {
-            SceneManager.LoadScene("CoronaWin");//Go to loading scene
+            SceneManager.LoadScene("CoronaWin");//go to loading scene
         }
-    }//End Update
 
-    //Function to make new injector left hand
+    }//end update
+
+    //function  to make new injector left hand
     void MakeNewInjectorL()
     {
-        ApplicationData.LInjectorLoaded = true;//New loaded
-        ApplicationData.LInjectorFired = false;//Not mark as fired
-        CurrentLeftInjector = Instantiate(TheInjector, TheLeftController.transform.position, TheLeftController.transform.rotation);//Make new injector
+        ApplicationData.LInjectorLoaded = true;//new loaded 
+        ApplicationData.LInjectorFired = false;//not mark as fired
+        CurrentLeftInjector = Instantiate(TheInjector, TheLeftController.transform.position, TheLeftController.transform.rotation);//make a new injector
 
-    }//End function to make new injector left hand
-    //Function to make new injector left hand
+    }///end function  to make new injector left hand
+
+    //function  to make new injector right hand
     void MakeNewInjectorR()
     {
-        ApplicationData.RInjectorLoaded = true;//New loaded
-        ApplicationData.RInjectorFired = false;//Not mark as fired
-        CurrentRightInjector = Instantiate(TheInjector, TheRightController.transform.position, TheRightController.transform.rotation);//Make new injector
+        ApplicationData.RInjectorLoaded = true;//new loaded 
+        ApplicationData.RInjectorFired = false;//not mark as fired
+        CurrentRightInjector = Instantiate(TheInjector, TheRightController.transform.position, TheRightController.transform.rotation);//make a new injector
 
-    }//End function to make new injector right hand
-}//End class
+    }///end function  to make new injector right hand
+
+}//end class
