@@ -14,8 +14,6 @@ This project is called Corona and it consists of simple C# scripts that walks th
 
 - <b>Windows 10</b> (21H2)
 
-<h2>Program walk-through:</h2>
-
 <br />
 <br />
 
