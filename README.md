@@ -16,26 +16,6 @@ This project is called Corona and it consists of simple C# scripts that walks th
 
 <h2>Program walk-through:</h2>
 
-<p align="center">
-Intro Screen: <br/>
-<img src="https://imgur.com/8k5qFlU.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-<img src="https://imgur.com/Y94Ty3a.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-<br />
-<br />
-Loading Screen:  <br/>
-<img src="https://imgur.com/63UXwQA.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-<img src="https://imgur.com/BMUvXVa.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-
-<br />
-<br />
-Game Screen: <br/>
-<img src="https://imgur.com/xURyqAK.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-<img src="https://imgur.com/1q8VEcU.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-<br />
-<br />
-Win Screen:  <br/>
-<img src="https://imgur.com/JsVJW9z.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-<img src="https://imgur.com/oHCOSII.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 <br />
 <br />
 
